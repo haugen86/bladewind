@@ -49,6 +49,7 @@
 <div class="relative w-full @if($add_clearing) mb-3 @endif">
     @if($toolbar)
         <div id="{{$name}}">{{$selected_value}}</div>
+        <textarea class="hidden" name="{{ $name }}"></textarea>
     @else
         <textarea {{ $attributes->merge(['class' => "bw-input peer $is_required $name $placeholder_color"]) }}
                   id="{{ $name }}"
@@ -116,6 +117,14 @@
         } else {
             quillOptions.modules.toolbar = modifyToolbarOptions(toolbarOptions, '{{$except}}');
             var quill_{{$name}} = new Quill('#{{$name}}', quillOptions);
+
+            var textarea =document.querySelector('[name="{{$name}}"]');
+            quill_{{$name}}.on('text-change', function () {
+                textarea.value = quill_{{$name}}.root.innerHTML;
+            });
+            textarea.addEventListener('input', function () {
+                quill_{{$name}}.root.innerHTML = textarea.value;
+            });
         }
     </script>
 @endif
